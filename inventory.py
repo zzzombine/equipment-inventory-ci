@@ -17,7 +17,7 @@ def warranty_end_date(purchase_date, months=WARRANTY_MONTHS):
     return date(year, month, day).isoformat()
 
 def load_inventory():
-    if not DATA_FILE.exists:
+    if not DATA_FILE.exists():
         return []
 
     with DATA_FILE.open("r", encoding="utf-8") as file:
@@ -26,6 +26,12 @@ def load_inventory():
 def save_inventory(devices):
     with DATA_FILE.open("w", encoding="utf-8") as file:
         json.dump(devices, file, ensure_ascii=False, indent=2)
+
+def is_serial_number_unique(devices, serial_number):
+    return not any(
+        device.get("serial_number") == serial_number
+        for device in devices
+    )
 
 def main():
     devices = load_inventory()
@@ -56,6 +62,10 @@ def main():
             serial_number = input("Серийный номер: ").strip()
             if not serial_number:
                 print("Серийный номер не должен быть пустым")
+                continue
+
+            if not is_serial_number_unique(devices, serial_number):
+                print("Устройство с таким серийным номером уже существует")
                 continue
 
             purchase_date = input("Дата покупки (ГГГГ-ММ-ДД): ").strip()

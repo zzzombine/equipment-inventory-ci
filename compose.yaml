@@ -1,0 +1,36 @@
+name: inventory-stack
+
+services:
+  inventory:
+    build: .
+    image: edu/inventory-service:1.0
+
+    ports:
+      - "8105:8005"
+
+    environment:
+      PORT: "8005"
+      MESSAGE: "Inventory updated"
+      APP_VERSION: "1.0"
+
+    volumes:
+      - inventory-data:/data
+
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:' + os.environ.get('PORT', '8005') + '/health', timeout=2).close()"
+      interval: 10s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+    mem_limit: 128m
+    restart: unless-stopped
+
+volumes:
+  inventory-data:
+    external: true
+    name: inventory-data

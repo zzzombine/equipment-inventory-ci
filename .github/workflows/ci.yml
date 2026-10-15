@@ -6,9 +6,12 @@ on:
       - main
     tags:
       - "*"
+
   pull_request:
     branches:
       - main
+
+  workflow_dispatch:
 
 jobs:
   validate:
@@ -93,3 +96,24 @@ jobs:
           name: equipment-inventory
           path: dist/
           retention-days: ${{ startsWith(github.ref, 'refs/tags/rc-') && 2 || 7 }}
+
+  deploy_test:
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main'
+    needs: [validate, test]
+    runs-on: ubuntu-24.04
+    container: python:3.12.7-slim
+
+    steps:
+      - name: Check deployment token
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          APP_PORT: ${{ vars.APP_PORT }}
+        run: |
+          test -n "$DEPLOY_TOKEN"
+          test "$APP_PORT" = "8105"
+          echo "Deployment configuration is valid"
+
+      - name: Deployment placeholder
+        run: echo "Manual deployment is ready"

@@ -26,3 +26,21 @@ jobs:
         run: |
           test -f Dockerfile
           test -f .dockerignore
+
+  test:
+    needs: validate
+    runs-on: ubuntu-latest
+    container: python:3.12.7-slim
+
+    steps:
+      - name: Test stage placeholder
+        run: echo "Test stage is ready"
+
+  package:
+    needs: test
+    runs-on: ubuntu-latest
+    container: python:3.12.7-slim
+
+    steps:
+      - name: Package stage placeholder
+        run: echo "Package stage is ready"

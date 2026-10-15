@@ -45,5 +45,25 @@ jobs:
     container: python:3.12.7-slim
 
     steps:
-      - name: Package stage placeholder
-        run: echo "Package stage is ready"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create distribution
+        run: |
+          mkdir -p dist
+
+          cp inventory.py README.md Dockerfile inventory.json.example dist/
+
+          {
+            echo "CI_COMMIT_SHA=$GITHUB_SHA"
+            echo "CI_PIPELINE_ID=$GITHUB_RUN_ID"
+            echo "Files:"
+            find dist -maxdepth 1 -type f ! -name manifest.txt -printf '%f\n' | sort
+          } > dist/manifest.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: equipment-inventory
+          path: dist/
+          retention-days: 7

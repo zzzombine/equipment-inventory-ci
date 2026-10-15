@@ -111,6 +111,9 @@ jobs:
     needs: [validate, test, package]
     runs-on: ubuntu-24.04
     container: python:3.12.7-slim
+    
+    environment:
+      name: test/inventory
 
     steps:
       - name: Check deployment token

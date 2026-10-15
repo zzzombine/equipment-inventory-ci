@@ -1,0 +1,28 @@
+
+name: Equipment Inventory CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    container: python:3.12.7-slim
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show Python version and commit
+        run: |
+          python --version
+          echo "Commit: $GITHUB_SHA"
+
+      - name: Check Python syntax
+        run: python -m compileall -q .
+
+      - name: Check Docker files
+        run: |
+          test -f Dockerfile
+          test -f .dockerignore

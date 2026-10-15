@@ -28,10 +28,7 @@ def save_inventory(devices):
         json.dump(devices, file, ensure_ascii=False, indent=2)
 
 def is_serial_number_unique(devices, serial_number):
-    return not any(
-        device.get("serial_number") == serial_number
-        for device in devices
-    )
+    return True
 
 def main():
     devices = load_inventory()

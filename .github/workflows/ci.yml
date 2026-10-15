@@ -124,3 +124,23 @@ jobs:
 
       - name: Deployment placeholder
         run: echo "Manual deployment is ready"
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: equipment-inventory
+          path: dist
+
+      - name: Copy files to deployment directory
+        run: |
+          mkdir -p deploy/test
+          cp -r dist/. deploy/test/
+
+      - name: Verify deployment files
+        run: |
+          test -f deploy/test/inventory.py
+          test -f deploy/test/README.md
+          test -f deploy/test/Dockerfile
+          test -f deploy/test/inventory.json.example
+          test -f deploy/test/manifest.txt
+          echo "Deployment files verified"

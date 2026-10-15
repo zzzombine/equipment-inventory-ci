@@ -32,6 +32,20 @@ jobs:
         run: |
           test -f Dockerfile
           test -f .dockerignore
+    
+      - name: Check APP_PORT
+        env:
+          APP_PORT: ${{ vars.APP_PORT }}
+        run: |
+          test "$APP_PORT" = "8105"
+          echo "APP_PORT is configured"
+
+      - name: Check DEPLOY_TOKEN
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          test -n "$DEPLOY_TOKEN"
+          echo "DEPLOY_TOKEN is configured"
 
   test:
     needs: validate

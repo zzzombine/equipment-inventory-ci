@@ -147,3 +147,11 @@ jobs:
           test -f deploy/test/inventory.json.example
           test -f deploy/test/manifest.txt
           echo "Deployment files verified"
+
+      - name: Checkout smoke test
+        uses: actions/checkout@v6
+        with:
+          path: smoke-source
+
+      - name: Run smoke test
+        run: python smoke-source/scripts/smoke_test.py

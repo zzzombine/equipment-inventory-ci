@@ -155,3 +155,26 @@ jobs:
 
       - name: Run smoke test
         run: python smoke-source/scripts/smoke_test.py
+ 
+      - name: Create deployment report
+        env:
+          APP_PORT: ${{ vars.APP_PORT }}
+        run: |
+          {
+            echo "Environment: test/inventory"
+            echo "Commit SHA: $GITHUB_SHA"
+            echo "Run ID: $GITHUB_RUN_ID"
+            echo "App port: $APP_PORT"
+            echo "Deployment directory: deploy/test"
+            echo "Smoke test: PASSED"
+            echo "Deployment time (UTC): $(date -u)"
+          } > deploy/test/deployment.txt
+
+          cat deploy/test/deployment.txt
+
+      - name: Upload deployment report
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-report
+          path: deploy/test/deployment.txt
+          retention-days: 7
